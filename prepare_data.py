@@ -51,7 +51,7 @@ def prepare_data(target, train, y, X_test, y_test):
             img=np.asarray(Image.open(j))
             #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
             resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            '''
+            
             if (k%7==0):
                 augmented = transform.rotate(resized, 90)
             elif (k%7==1):
@@ -70,10 +70,10 @@ def prepare_data(target, train, y, X_test, y_test):
             elif (k%7==6):
                 augmented = np.roll(resized, -shift, axis = 0)
                 augmented[-shift:,:] = 0
-            '''
+            
 
             train.append(resized)
-            #train.append(augmented)
+            train.append(augmented)
             
             k+=1
         k = 0
@@ -82,7 +82,7 @@ def prepare_data(target, train, y, X_test, y_test):
             img=np.asarray(Image.open(j))
             #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
             resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            '''
+            
             if (k%7==0):
                 augmented = transform.rotate(resized, 90)
             elif (k%7==1):
@@ -101,14 +101,14 @@ def prepare_data(target, train, y, X_test, y_test):
             elif (k%7==6):
                 augmented = np.roll(resized, -shift, axis = 0)
                 augmented[-shift:,:] = 0
-            '''
+            
 
 
             
             k+=1
             
             y.append(resized)
-            #y.append(augmented)
+            y.append(augmented)
         
     
     
