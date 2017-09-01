@@ -4,6 +4,8 @@ Created on Fri Jun 30 03:34:12 2017
 
 @author: qinxi
 """
+
+#for git
 from PIL import Image
 import os
 from glob import glob
