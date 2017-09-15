@@ -15,7 +15,8 @@ from keras.optimizers import Adam
 from keras import backend as K
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from skimage import transform
-from prepare_data import prepare_data
+from flynetfunctions import prepare_data
+
 
 
 train = []
@@ -28,6 +29,8 @@ directory = "/media/zlab-1/Data/Lian/keras/nData"
 folderstart = 12
 folderend = 14
 target = 'A'
+if target == 'AD':
+    directory = "/media/zlab-1/Data/Lian/keras/AD"
 
 
 train, y, X_test, y_test = prepare_data(target, train, y, X_test, y_test)
@@ -91,7 +94,7 @@ model = Model(inputs=[inputs], outputs=[conv10])
 
 model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
 
-model_checkpoint = ModelCheckpoint(directory+'/weights1.h5', monitor='val_loss', save_best_only=True)
+model_checkpoint = ModelCheckpoint(directory+'/weights1.h5'.format(), monitor='val_loss', save_best_only=True)
 
 earlystop = EarlyStopping(monitor='val_loss', patience=5, mode='auto')
 

@@ -13,28 +13,32 @@ from keras.models import Model
 from keras.layers import Input, concatenate, Conv2D, MaxPooling2D, Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as K
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from skimage import transform
+import matplotlib.pyplot as plt
 
 def prepare_data(target, train, y, X_test, y_test):
 
     if target=='AD':
         directory = "/media/zlab-1/Data/Lian/keras/AD"
         folders=sorted(glob(directory+"/*/"))
-        start1 = -4
-        end1 = -2
+        start1 = 19
+        end1 = 20
         folder1 = folders[start1:end1]
         folder=folders[0:start1]+folders[end1:]
 
     else:
         directory = "/media/zlab-1/Data/Lian/keras/nData"
+        directory2 = "./AD"
         start1 = 18
         end1 = 20
         start2 = 81
         end2 = 83
-        folders=sorted(glob(directory+"/*/"))
-        folder1=folders[start1:end1]+folders[start2:end2]
-        folder=folders[0:start1]+folders[end1:start2]+folders[end2:]
+        start3 = -14
+        end3 = -12
+        folders=sorted(glob(directory+"/*/"))+sorted(glob(directory2+"/*/"))
+        folder1=folders[start1:end1]+folders[start2:end2] + folders[start3:end3]
+        folder=folders[0:start1]+folders[end1:start2]+folders[end2:start3] + folders[end3:]
 
     shift = 10
 
@@ -138,3 +142,35 @@ def prepare_data(target, train, y, X_test, y_test):
     y_test=y_test[...,np.newaxis]
     
     return train, y, X_test, y_test
+
+
+def plotresults(p_ground, p_count,p_iou,p_diameter,start,end,name):
+    p_ground = p_ground[start:end]
+    p_count = p_count[start:end]
+    p_iou = p_iou[start:end]
+
+    plt.plot(p_ground)
+    plt.plot(p_count)
+    plt.savefig('./resultimage/pixelcount_'+name+'.png')
+    plt.gcf().clear()
+
+    plt.plot(p_iou)
+    plt.savefig('./resultimage/iou_'+name+'.png')
+    plt.gcf().clear()
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ax1.plot(p_ground)
+    ax1.plot(p_count)
+    ax1.axis([0,len(p_count),-1000,max(p_count)*1.07])
+    #ax1.plot(countp2)
+    ax1.set_ylabel('pixelcount')
+
+    ax2 = ax1.twinx()
+    ax2.plot(p_iou,'r-')
+    ax2.axis([0,len(p_iou),0.3,3])
+    ax2.set_ylabel('IOU',color='r')
+    plt.savefig('./resultimage/testresult_'+name+'.png')
+    plt.gcf().clear()
+
+    return
