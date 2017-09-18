@@ -16,8 +16,10 @@ from keras import backend as K
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 import matplotlib.pyplot as plt
 from flynetfunctions import plotresults, getbox
+from parameters import Parameters
+from skimage import morphology
 
-
+parameters = Parameters()
 
 train=[]
 y=[]
@@ -35,12 +37,14 @@ if target=='AD':
 else:
     directory = "/media/zlab-1/Data/Lian/keras/nData"
     directory2 = "./AD"
-    start1 = 18
-    end1 = 19
-    start2 = 53
-    end2 = 54
-    start3 = -11
-    end3 = -10
+    #EP01 : 18-19
+    start1 = parameters.teststartEP
+    end1 = parameters.testendEP
+    #Larva02 : 53 - 54
+    start2 = parameters.teststartLA
+    end2 = parameters.testendLA
+    start3 = parameters.teststartAD
+    end3 = parameters.testendAD
     folders=sorted(glob(directory+"/*/"))+sorted(glob(directory2+"/*/"))
     folder1=folders[start1:end1]+folders[start2:end2] + folders[start3:end3]
     folder=folders[0:start1]+folders[end1:start2]+folders[end2:start3] + folders[end3:]
@@ -140,7 +144,10 @@ for i in range(len(a)):
     #count2=(np.sum(c1))/float(255)
     #countp.append(count2)
 
+    c1 = morphology.remove_small_objects(c1, 480)
+    
     count3 = ((150<c1)&(c1<260)).sum()
+    #count3 = (c_mor == True).sum()
     countp2.append(count3)
 
     vertidiameter, horidiamter = getbox(c1)

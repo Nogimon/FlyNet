@@ -14,9 +14,11 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from matplotlib.axis import XAxis
 from skimage import transform
+from parameters import Parameters
 
 def prepare_data(target, train, y, X_test, y_test):
 
+    parameters = Parameters()
     if target=='AD':
         directory = "/media/zlab-1/Data/Lian/keras/AD"
         folders=sorted(glob(directory+"/*/"))
@@ -28,12 +30,12 @@ def prepare_data(target, train, y, X_test, y_test):
     else:
         directory = "/media/zlab-1/Data/Lian/keras/nData"
         directory2 = "./AD"
-        start1 = 18
-        end1 = 20
-        start2 = 52
-        end2 = 55
-        start3 = -12
-        end3 = -10
+        start1 = parameters.trainstartEP
+        end1 = parameters.trainendEP
+        start2 = parameters.trainstartLA
+        end2 = parameters.trainendLA
+        start3 = parameters.trainstartAD
+        end3 = parameters.trainendAD
         folders=sorted(glob(directory+"/*/"))+sorted(glob(directory2+"/*/"))
         folder1=folders[start1:end1]+folders[start2:end2] + folders[start3:end3]
         folder=folders[0:start1]+folders[end1:start2]+folders[end2:start3] + folders[end3:]
@@ -182,9 +184,9 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
 
     plt.figure()
     
-    gs = gridspec.GridSpec(2, 1, height_ratios = [3, 1])
-    #gs.update(hspace = 0)
-    plt.subplot(gs[0])
+    gs = gridspec.GridSpec(5, 4)
+    gs.update(hspace = 0.4)
+    plt.subplot(gs[0 : 2, :])
     #XAxis.set_ticks_position(top)
     plt.tick_params(direction = 'in')
     plt.plot(p_ground, label = 'GroudTruth')#, color = '#006064')
@@ -193,16 +195,23 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     #ax1.plot(countp2)
     #ax1.set_ylabel('pixelcount')
 
-    plt.subplot(gs[1])
-    plt.plot(p_iou, color = '1B5E20')#33691E')# color = '#006064')
-    plt.ylim(0, 1)
+    
     #ax2.set_ylabel('IOU',color='#7f7f7f')
     #plt.title(name + 'Heart Area Change')
+    plt.subplot(gs[2: 4, :])
+    plt.plot(diameterhd[0], label = 'GroudTruth')#, color = '#006064')
+    plt.plot(diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
+
+    plt.subplot(gs[4, :])
+    plt.plot(p_iou, color = '#1B5E20')#33691E')# color = '#006064')
+    plt.ylim(0, 1)
+
+
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
 
 
-
+    '''
     plt.figure()
     
     gs = gridspec.GridSpec(2, 1, height_ratios = [3, 1])
@@ -224,7 +233,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     plt.savefig('./resultimage/diamterresult_'+name+'.png')
     plt.clf()
 
-    '''
+    
     plt.figure(num = None, figsize = (8, 6), dpi = 200)
     plt.plot(diametervd[0])#, color = 'g')
     plt.plot(diametervd[1])#, color = '#ff7f0e')
@@ -237,6 +246,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     plt.savefig('./resultimage/vertical_diameter_accuracy_'+name+'.png')
     plt.clf()
     '''
+    '''
     plt.figure(num = None, figsize = (8, 6), dpi = 200)
     plt.plot(diameterhd[0])
     plt.plot(diameterhd[1])
@@ -248,7 +258,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     plt.plot(diameterhd[2], color = 'darkblue')
     plt.savefig('./resultimage/horizontal_diameter_accuracy_'+name+'.png')
     plt.close('all')
-    
+    '''
 
     return
 
