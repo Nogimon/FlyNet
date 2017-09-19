@@ -3,6 +3,7 @@ import numpy as np
 import os
 from glob import glob
 import cv2
+import time
 '''
 from keras.models import Model, load_model
 from keras.layers import Input, concatenate, Conv2D, MaxPooling2D, Conv2DTranspose
@@ -155,6 +156,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
 
     plt.plot(p_ground)#, color = 'darkgreen')
     plt.plot(p_count)#, color = 'gold')
+    #plt.savefig('./resultimage/pixelcount_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/pixelcount_'+name+'.png')
     plt.clf()
     #plt.gcf().clear()
@@ -162,9 +164,9 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     plt.figure(num = None, figsize = (8, 2), dpi = 200)
     plt.ylim(0, 1)
     plt.plot(p_iou, color = '#8c564b')
+    #plt.savefig('./resultimage/iou_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/iou_'+name+'.png')
     plt.clf()
-
     '''
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
@@ -199,16 +201,27 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     #ax2.set_ylabel('IOU',color='#7f7f7f')
     #plt.title(name + 'Heart Area Change')
     plt.subplot(gs[2: 4, :])
-    plt.plot(diameterhd[0], label = 'GroudTruth')#, color = '#006064')
-    plt.plot(diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
+    if (name == 'larva'):
+        plt.plot(diameterhd[0], label = 'GroudTruth')#, color = '#006064')
+        plt.plot(diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
+        savenpy(diameterhd[1], name)
+    else:
+        plt.plot(diametervd[0], label = 'GroudTruth')#, color = '#006064')
+        plt.plot(diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
+        savenpy(diametervd[1], name)
 
     plt.subplot(gs[4, :])
     plt.plot(p_iou, color = '#1B5E20')#33691E')# color = '#006064')
     plt.ylim(0, 1)
 
 
+    #plt.savefig('./resultimage/arearesult_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
+
+
+
+    #savenpy(diameter)
 
 
     '''
@@ -260,6 +273,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, na
     plt.close('all')
     '''
 
+
     return
 
 
@@ -271,6 +285,10 @@ def getbox(image):
     i = 0
     if (horidiameter > 80):
         plt.imshow(image)
-        plt.savefig("./test.png")
+        plt.savefig("./"+time.asctime(time.localtime(time.time()))+"test.png")
         plt.close('all')
     return (vertdiameter, horidiameter)
+
+
+def savenpy(data, savename):
+    np.save('./resultimage/'+savename+'.npy', data)

@@ -144,7 +144,7 @@ for i in range(len(a)):
     #count2=(np.sum(c1))/float(255)
     #countp.append(count2)
 
-    c1 = morphology.remove_small_objects(c1, 480)
+    #c1 = morphology.remove_small_objects(c1, 350)
     
     count3 = ((150<c1)&(c1<260)).sum()
     #count3 = (c_mor == True).sum()

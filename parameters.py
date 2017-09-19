@@ -4,11 +4,11 @@ class Parameters:
     #EP01 : 18-19
     #EP02 : 20-23
     #EP04 : 25-28
-    trainstartEP = 25
-    trainendEP = 28
+    trainstartEP = 31
+    trainendEP = 33
     #One good pick: 25-26
-    teststartEP = 25
-    testendEP = 26
+    teststartEP = 31
+    testendEP = 32
     
     #Larva01 : 47 - 52
     #Larva02 : 52 - 55
