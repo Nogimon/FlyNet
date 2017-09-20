@@ -144,13 +144,13 @@ def prepare_data(target, train, y, X_test, y_test):
     
     return train, y, X_test, y_test
 
-def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, start, end, name):
-    p_ground = p_ground[start:end]
-    p_count = p_count[start:end]
-    p_iou = p_iou[start:end]
+def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
+    #p_ground = p_ground[start:end]
+    #p_count = p_count[start:end]
+    #p_iou = p_iou[start:end]
 
-    diameterhd = diameterhd[:,start:end]
-    diametervd = diametervd[:,start:end]
+    #diameterhd = diameterhd[:,start:end]
+    #diametervd = diametervd[:,start:end]
 
     plt.figure(num = None, figsize = (8, 6), dpi = 200)
 
