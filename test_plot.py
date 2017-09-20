@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jul  3 11:11:03 2017
-
-@author: qinxi
-"""
 from PIL import Image
 import numpy as np
 import os
