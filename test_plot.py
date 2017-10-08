@@ -165,6 +165,8 @@ def calculatearea(a, name):
     counthd = np.asarray(counthd)
     countvdo = np.asarray(countvdo)
     countvd = np.asarray(countvd)
+    counto = np.asarray(counto)
+    countp2 = np.asarray(countp2)
 
     #accuracy_vd = 1 - (countvd - countvdo) / (countvdo.astype(float))
     accuracy_vd = (countvd) / (countvdo.astype(float))
@@ -178,30 +180,41 @@ def calculatearea(a, name):
     diameterhd = np.vstack((counthdo, counthd))
     diameterhd = np.vstack((diameterhd, accuracy_hd))
 
+    #parameters = Parameters()
+    counto = counto * parameters.yfactor * parameters.xfactor
+    countp2 = countp2 * parameters.yfactor * parameters.xfactor
+    diametervd = diametervd * parameters.yfactor
+    diameterhd = diameterhd * parameters.xfactor
+
     print(np.average(iou))
     np.save('markresult.npy', countp)
     np.save('iou.npy', iou)
 
     return(counto, countp2, iou, diametervd, diameterhd)
 
+
+
 #Mode / View / Control
 #Start with program
+if __name__ == '__main__':
+    parameters = Parameters()
 
-parameters = Parameters()
+    K.set_image_data_format('channels_last') 
 
-K.set_image_data_format('channels_last') 
+    smooth=1.
+    #model = load_model('/media/zlab-1/Data/Lian/keras/EP/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+    model = load_model(parameters.directory+'/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
 
-smooth=1.
-#model = load_model('/media/zlab-1/Data/Lian/keras/EP/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
-model = load_model(parameters.directory+'/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+    for name in ['EP', 'larva', 'AD']:
 
-for name in ['EP', 'larva', 'AD']:
+        X_test, y_test = prepare_data_test(name)
 
-    X_test, y_test = prepare_data_test(name)
+        a = model.predict(X_test, batch_size=32, verbose=2)
 
-    a = model.predict(X_test, batch_size=32, verbose=2)
+        counto, countp2, iou, diametervd, diameterhd = calculatearea(a, name)
 
-    counto, countp2, iou, diametervd, diameterhd = calculatearea(a, name)
+        #for larva maybe skip?
+        np.save('./diameter' + name + '.npy', diametervd)
 
-    plotresults(counto, countp2, iou, diametervd, diameterhd, name)
+        plotresults(counto, countp2, iou, diametervd, diameterhd, name)
 

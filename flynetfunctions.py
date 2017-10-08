@@ -151,11 +151,13 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
 
     #diameterhd = diameterhd[:,start:end]
     #diametervd = diametervd[:,start:end]
-
+    xaxis = np.array(range(len(p_ground)))
+    parameters=Parameters()
+    xaxis = xaxis/parameters.timefactor
     plt.figure(num = None, figsize = (8, 6), dpi = 200)
 
-    plt.plot(p_ground)#, color = 'darkgreen')
-    plt.plot(p_count)#, color = 'gold')
+    plt.plot(xaxis,p_ground)#, color = 'darkgreen')
+    plt.plot(xaxis,p_count)#, color = 'gold')
     #plt.savefig('./resultimage/pixelcount_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/pixelcount_'+name+'.png')
     plt.clf()
@@ -163,7 +165,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
 
     plt.figure(num = None, figsize = (8, 2), dpi = 200)
     plt.ylim(0, 1)
-    plt.plot(p_iou, color = '#8c564b')
+    plt.plot(xaxis,p_iou, color = '#8c564b')
     #plt.savefig('./resultimage/iou_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/iou_'+name+'.png')
     plt.clf()
@@ -191,8 +193,12 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     plt.subplot(gs[0 : 2, :])
     #XAxis.set_ticks_position(top)
     plt.tick_params(direction = 'in')
-    plt.plot(p_ground, label = 'GroudTruth')#, color = '#006064')
-    plt.plot(p_count, label = 'ModelPrediction')#, color = '#F57C00')
+    plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
+    plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
+    plt.title('ground truth & prediction Vs Time')
+    plt.xlabel('Time(s)')
+    plt.ylabel('Area(um^2)')
+    plt.xlim(0,xaxis[-1])
     #plt.axis([0,len(p_count),-1000,max(p_ground)*1.07])
     #ax1.plot(countp2)
     #ax1.set_ylabel('pixelcount')
@@ -202,16 +208,25 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     #plt.title(name + 'Heart Area Change')
     plt.subplot(gs[2: 4, :])
     if (name == 'larva'):
-        plt.plot(diameterhd[0], label = 'GroudTruth')#, color = '#006064')
-        plt.plot(diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
-        savenpy(diameterhd[1], name)
+        plt.plot(xaxis,diameterhd[0], label = 'GroudTruth')#, color = '#006064')
+        plt.plot(xaxis,diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
+        #savenpy(diameterhd[1], name)
     else:
-        plt.plot(diametervd[0], label = 'GroudTruth')#, color = '#006064')
-        plt.plot(diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
-        savenpy(diametervd[1], name)
+        plt.plot(xaxis,diametervd[0], label = 'GroudTruth')#, color = '#006064')
+        plt.plot(xaxis,diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
+        #savenpy(diametervd[1], name)
+    plt.title('ground truth & prediction Vs Time')
+    plt.xlabel('Time(s)')
+    plt.ylabel('Diameter(um)')
+    plt.xlim(0,xaxis[-1])
+
 
     plt.subplot(gs[4, :])
-    plt.plot(p_iou, color = '#1B5E20')#33691E')# color = '#006064')
+    plt.plot(xaxis,p_iou, color = '#1B5E20')#33691E')# color = '#006064')
+    plt.title('iou Vs Time')
+    plt.xlabel('Time(s)')
+    plt.ylabel('iou')
+    plt.xlim(0,xaxis[-1])
     plt.ylim(0, 1)
 
 

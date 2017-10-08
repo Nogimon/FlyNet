@@ -36,9 +36,9 @@ def findpeaks(data, step):
     return (high_ave, high_std, low_ave, low_std)
 
 #Load data
-data_ad = np.load('./Adult.npy')
-data_ep = np.load('./EP.npy')
-data_la = np.load('./larva.npy')
+data_ad = np.load('./resultimage/Adult.npy')
+data_ep = np.load('./resultimage/EP.npy')
+data_la = np.load('./resultimage/larva.npy')
 high_ave = []
 low_ave = []
 high_std = []

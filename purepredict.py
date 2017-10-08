@@ -19,24 +19,25 @@ import matplotlib.pyplot as plt
 from skimage import io
 
 #import Image
-START = 50
-END = 300
-im = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.tiff')
+START = 58
+END = 230
+#im = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.tiff')
+im = io.imread('./Purepredict/SHR_S01_L2_WT_24B_NF_OD_U-3D_ 4x 0_R02.tiff')
 #SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R01/SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R02.tiff')
 #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
 im = np.asarray(im[:,START:END,:])
-loadmodel = './weights1.h5'
+loadmodel = './nData/weights1.h5'
 
 X_test = []
 y_test = []
 #for i in range(len(im)):
-for i in range(500):
+for i in range(2000):
     X_test.append(cv2.resize(im[i], (128, 128), cv2.INTER_LINEAR))
-    y_test.append(cv2.resize(gt[i], (128, 128), cv2.INTER_LINEAR))
+    #y_test.append(cv2.resize(gt[i], (128, 128), cv2.INTER_LINEAR))
 X_test = np.asarray(X_test)
 X_test=X_test[...,np.newaxis] 
-y_test = np.asarray(y_test)
-y_test = y_test[...,np.newaxis]    
+#y_test = np.asarray(y_test)
+#y_test = y_test[...,np.newaxis]    
 
 '''
 y_test=[]
@@ -149,7 +150,7 @@ iou=[]
 for i in range(len(a)):
     c=a[i]*255
     c=c.astype('uint8')
-    b=y_test[i]*255
+    #b=y_test[i]*255
     #bb=cv2.cvtColor(b,cv2.COLOR_GRAY2RGB)
     #cc=cv2.cvtColor(c,cv2.COLOR_GRAY2RGB)
     #bbb=np.where(bb>0)
@@ -161,31 +162,31 @@ for i in range(len(a)):
     #dst = cv2.addWeighted(cc,0.5,bb,0.5,0)    
     #cv2.imwrite('Z:/Lian/DeepLearning/keras/result/{}.jpg'.format(format(i,'05')),dst)
     #cv2.imwrite('Z:/Lian/DeepLearning/keras/result/{}_original.jpg'.format(format(i,'05')),X_test[i])
-    
+    '''
     b1=np.squeeze(b)
     b1=b1[:,:,2]
     b1=b1/float(65536)
     b1=b1*255
     count1=np.sum(b1)/255
     counto.append(count1)
-    
+    '''
     c1=np.squeeze(c)
     count2=np.sum(c1)/255
     countp.append(count2)
-
+    
     count3 = ((250<c1)&(c1<260)).sum()
     countp2.append(count3)
-    
+    '''
     simplesum = b1/255 + c1/255
     overlap = ((1.8 < simplesum))
     union = ((0.9 < simplesum))
     iou.append(overlap.sum()/union.sum())
-    
-plt.plot(counto)
-plt.plot(countp)
+    '''
+#plt.plot(counto)
+#plt.plot(countp)
 plt.plot(countp2)
 #plt.show()
-plt.savefig('markingresult.png')
+plt.savefig('predictresult.png')
 plt.gcf().clear()
 #plt.plot(iou)
 #plt.show()
