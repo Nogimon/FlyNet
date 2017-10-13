@@ -196,7 +196,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
     plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
     plt.title('ground truth & prediction Vs Time')
-    plt.xlabel('Time(s)')
+    #plt.xlabel('Time(s)')
     plt.ylabel('Area(um^2)')
     plt.xlim(0,xaxis[-1])
     #plt.axis([0,len(p_count),-1000,max(p_ground)*1.07])
@@ -215,15 +215,15 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
         plt.plot(xaxis,diametervd[0], label = 'GroudTruth')#, color = '#006064')
         plt.plot(xaxis,diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
         #savenpy(diametervd[1], name)
-    plt.title('ground truth & prediction Vs Time')
-    plt.xlabel('Time(s)')
+    #plt.title('ground truth & prediction Vs Time')
+    #plt.xlabel('Time(s)')
     plt.ylabel('Diameter(um)')
     plt.xlim(0,xaxis[-1])
 
 
     plt.subplot(gs[4, :])
     plt.plot(xaxis,p_iou, color = '#1B5E20')#33691E')# color = '#006064')
-    plt.title('iou Vs Time')
+    #plt.title('iou Vs Time')
     plt.xlabel('Time(s)')
     plt.ylabel('iou')
     plt.xlim(0,xaxis[-1])
@@ -307,3 +307,28 @@ def getbox(image):
 
 def savenpy(data, savename):
     np.save('./resultimage/'+savename+'.npy', data)
+
+    
+def findpeaks(data, step):
+    #Find peaks
+    peaks = find_peaks_cwt(data, np.arange(1, step))
+    peaks2 = find_peaks_cwt(-data, np.arange(1, step))
+    #peaks = np.sort(np.asarray(peaks+peaks2))
+    plt.figure()
+    plt.plot(data, color = 'r')
+    high = (np.vstack((peaks, np.asarray(data[peaks]))))
+    low = np.vstack((peaks2, np.asarray(data[peaks2])))
+    #height = np.flip(np.rot90(height), axis = 0)
+    plt.scatter(high[0], high[1])
+    plt.scatter(low[0], low[1])
+    plt.show()
+    plt.gcf().clear()
+    #record height data
+    high_ave = np.average(high[1])
+    high_std = np.std(high[1])
+    low_ave = np.average(low[1])
+    low_std = np.std(low[1])
+    #calculate heart rate
+    timerange = (peaks[-1] - peaks[0]) / 129
+    heartrate = len(peaks) / timerange
+    return (heartrate, high_ave, high_std, low_ave, low_std)

@@ -168,21 +168,24 @@ def prepare_data(name):
 
 def generateData():
 
+    name = "Larva"
+    train, y, X_validate, y_validate, X_test, y_test = prepare_data(name)
+    '''
     train=[]
     y=[]
     X_validate=[]
     y_validate=[]
     X_test = []
     y_test = []
-
-    for name in ["Larva", "EP", "AD"]:
+    '''
+    for name in ["EP", "AD"]:
         train1, y1, X_validate1, y_validate1, X_test1, y_test1 = prepare_data(name)
-        train.append(train1)
-        y.append(y1)
-        X_validate.append(X_validate1)
-        y_validate.append(y_validate1)
-        X_test.append(X_test1)
-        y_test.append(y_test1)
+        train = np.vstack((train, train1))
+        y = np.vstack((y,y1))
+        X_validate= np.vstack((X_validate, X_validate1))
+        y_validate= np.vstack((y_validate,y_validate1))
+        X_test= np.vstack((X_test, X_test1))
+        y_test= np.vstack((y_test, y_test1))
 
     
     train=np.asarray(train)
