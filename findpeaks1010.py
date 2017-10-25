@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 #from peakdetect import peakdetect
 from scipy.signal import find_peaks_cwt
 from flynetfunctions import findpeaks
-
+import pandas as pd
 
 def plotbar(highgt, lowgt, highstdgt, lowstdgt, ylabel):
     n_groups = 3
@@ -26,7 +26,7 @@ def plotbar(highgt, lowgt, highstdgt, lowstdgt, ylabel):
     rects2 = plt.bar(index + 2 * bar_width, lowgt, bar_width, color = '#ff7043', yerr = lowstdgt, error_kw=error_config, label = 'Prediction')
     plt.xlabel('Types of fly')
     plt.ylabel(ylabel)
-    plt.xticks(index + 2 * bar_width, ('larva', 'EP', 'AD'))
+    plt.xticks(index + 1.5 * bar_width, ('Larva', 'Pupa', 'Adult'))
     plt.legend()
     plt.tight_layout()
     plt.savefig('./resultimage/fig4_'+ylabel+'.png')
@@ -76,11 +76,21 @@ for data1 in [data_la, data_ep, data_ad]:
         low_ave.append(low_ave1)
         low_std.append(low_std1)
         '''
+ratiogt=[(highgt[_]-lowgt[_])/highgt[_] for _ in range(3)]
+ratiopd=[(highpd[_]-lowpd[_])/highpd[_] for _ in range(3)]
 
 plotbar(highgt, highpd, highstdgt, lowstdgt, "End Diastolic Diameter")
 plotbar(lowgt, lowpd, highstdgt, lowstdgt, "End Systolic Diameter")
 plotbar(heartrategt, heartratepd, highstdgt, lowstdgt, "Heart Rate")
+plotbar(ratiogt, ratiopd , [0,0,0], [0,0,0], "Fraction Shortening")
+d=[[highgt,highpd],[lowgt,lowpd],[heartrategt,heartratepd],[ratiogt,ratiopd]]
+df=pd.DataFrame(data=d,columns=['groundtruth','prediction'],index=['high','low','rate','ratio'])
+df.append(df).to_csv('df.csv')
 
+df1=pd.read_csv('df.csv')
+print(df1.shape)
+print(df1.iloc[0].shape)
+print(df1.iloc[4].shape)
 '''
 n_groups = 3
 fig, ax = plt.subplots()

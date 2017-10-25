@@ -16,6 +16,7 @@ from matplotlib import gridspec
 from matplotlib.axis import XAxis
 from skimage import transform
 from parameters import Parameters
+from scipy.signal import find_peaks_cwt
 
 def prepare_data(target, train, y, X_test, y_test):
 
@@ -300,7 +301,7 @@ def getbox(image):
     i = 0
     if (horidiameter > 80):
         plt.imshow(image)
-        plt.savefig("./"+time.asctime(time.localtime(time.time()))+"test.png")
+        plt.savefig("./test.png")
         plt.close('all')
     return (vertdiameter, horidiameter)
 
@@ -308,13 +309,13 @@ def getbox(image):
 def savenpy(data, savename):
     np.save('./resultimage/'+savename+'.npy', data)
 
-    
+
 def findpeaks(data, step):
     #Find peaks
     peaks = find_peaks_cwt(data, np.arange(1, step))
     peaks2 = find_peaks_cwt(-data, np.arange(1, step))
     #peaks = np.sort(np.asarray(peaks+peaks2))
-    plt.figure()
+    #plt.figure()
     plt.plot(data, color = 'r')
     high = (np.vstack((peaks, np.asarray(data[peaks]))))
     low = np.vstack((peaks2, np.asarray(data[peaks2])))
@@ -329,6 +330,6 @@ def findpeaks(data, step):
     low_ave = np.average(low[1])
     low_std = np.std(low[1])
     #calculate heart rate
-    timerange = (peaks[-1] - peaks[0]) / 129
-    heartrate = len(peaks) / timerange
+    timerange = (peaks[-1] - peaks[0]) / 129.0
+    heartrate = len(peaks) / float(timerange)
     return (heartrate, high_ave, high_std, low_ave, low_std)

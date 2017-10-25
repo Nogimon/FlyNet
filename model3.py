@@ -27,12 +27,7 @@ def generatefolders(name):
 def prepare_data(name):
 
     folders = generatefolders(name)
-    train=[]
-    y=[]
-    X_validate=[]
-    y_validate=[]
-    X_test = []
-    y_test = []
+           
     
     foldertrain = folders[:]    
     foldervalidate = folders[parameters.valifolder:parameters.valifolder+1]
@@ -41,6 +36,15 @@ def prepare_data(name):
     del foldertrain[parameters.valifolder]
     del foldertrain[parameters.testfolder]
 
+    train, y = generatetrain(foldertrain)
+    X_validate, y_validate = generatevalidate(foldervalidate)
+    X_test, y_test = generatetest(foldertest)
+    
+    return (train, y, X_validate, y_validate, X_test, y_test)
+
+def generatetrain(foldertrain):
+    train=[]
+    y=[]
     #generate train data
     shift = 10
     for i in foldertrain:
@@ -118,10 +122,13 @@ def prepare_data(name):
     
     train=np.asarray(train)
     y=np.asarray(y)
-    
-    
 
-    #generate validate data
+    return (train, y)
+
+def generatevalidate(foldervalidate):
+    X_validate=[]
+    y_validate=[]
+     #generate validate data
     for i in foldervalidate:
         print("the validate data is", i)
         file=sorted(glob(i+'*.png'))
@@ -142,7 +149,12 @@ def prepare_data(name):
 
     X_validate=np.asarray(X_validate)
     y_validate = np.asarray(y_validate)
-    
+
+    return (X_validate, y_validate)
+
+def generatetest(foldertest):
+    X_test = []
+    y_test = []
     #generate test data
     for i in foldertest:
         print("the test data is", i)
@@ -160,11 +172,9 @@ def prepare_data(name):
     
     X_test=np.asarray(X_test)
     y_test=np.asarray(y_test)
-    
 
+    return (X_test, y_test)
 
-
-    return (train, y, X_validate, y_validate, X_test, y_test)
 
 def generateData():
 
@@ -260,23 +270,28 @@ def get_model():
 if __name__ == '__main__':
 
     directory = "./nTrain"
+
+    #get the data
+    parameters = Parameters()
+    train, y, X_validate, y_validate, X_test, y_test = generateData()
+
+
     #Set the model
     K.set_image_data_format('channels_last') 
     smooth=1.
     model=get_model()
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
-    model_checkpoint = ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now())), monitor='val_loss', save_best_only=True)
+    #model_checkpoint = ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now())), monitor='val_loss', save_best_only=True)
+    model_checkpoint = ModelCheckpoint(directory+'/weights1_test' + str(parameters.testfolder) + '.h5', monitor='val_loss', save_best_only=True)
     earlystop = EarlyStopping(monitor='val_loss', patience=5, mode='auto')
     
-    #get the data
-    parameters = Parameters()
-    train, y, X_validate, y_validate, X_test, y_test = generateData()
+    
 
     #Train
     model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_test, y_test))
 
     #Test
-    a=model.predict(X_test, batch_size=32, verbose=2)
+    #a=model.predict(X_test, batch_size=32, verbose=2)
 
 
 
