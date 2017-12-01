@@ -40,5 +40,5 @@ class Parameters:
     #time frames/second
     timefactor = 129.9
 
-    valifolder = 4
-    testfolder = 5
+    valifolder = 8
+    testfolder = 9

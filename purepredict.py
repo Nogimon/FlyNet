@@ -72,7 +72,7 @@ def calculatearea(a, directory):
 
         
         #if name == 'larva':
-        c1 = morphology.remove_small_objects(c1, 350)
+        #c1 = morphology.remove_small_objects(c1, 100)
         
 
         count3 = ((200<c1)&(c1<260)).sum()
@@ -126,8 +126,8 @@ def calculatearea(a, directory):
     diameterhd = diameterhd * parameters.xfactor
 
     print(np.average(iou))
-    np.save(figuredirectory + 'markresult.npy', countp)
-    np.save(figuredirectory +  'iou.npy', iou)
+    np.save(figuredirectory + 'predict_markresult.npy', countp)
+    np.save(figuredirectory +  'predict_iou.npy', iou)
 
 
     plt.figure(num = None, figsize = (12, 6), dpi = 200)
@@ -141,8 +141,8 @@ def calculatearea(a, directory):
 if __name__ == '__main__':
 
     #import Image
-    START = 190
-    END = 370
+    START = 0
+    END = 2000
     #im = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.tiff')
 
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
     im = np.asarray(im[:,START:END,:])
     #loadmodel = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
-    loadmodel = '/media/zlab-1/Data/Lian/keras/nData/weights1.h5'
+    loadmodeldir = '/media/zlab-1/Data/Lian/keras/nData/weights1.h5'
 
     X_test = []
     y_test = []
@@ -199,9 +199,9 @@ if __name__ == '__main__':
     smooth=1.
 
 
-    X_test = X_test[1200:1500]
+    X_test = X_test[START:END]
 
-    model = load_model(loadmodel, custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+    model = load_model(loadmodeldir, custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
 
     a=model.predict(X_test, batch_size=32, verbose=2)
 

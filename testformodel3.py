@@ -153,25 +153,38 @@ def calculatearea(a, name):
 #Mode / View / Control
 #Start with program
 if __name__ == '__main__':
+    
+
+
     parameters = Parameters()
 
-    K.set_image_data_format('channels_last') 
 
-    smooth=1.
 
-    directory = "./nTrain"
-    #model = load_model('/media/zlab-1/Data/Lian/keras/EP/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
-    model = load_model(directory+'/weights1-2017-10-09 14:31:11.917915-.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+    for i in range(5,14):
 
-    for name in ['EP', 'Larva', 'AD']:
+        parameters.testfolder = i
 
-        X_test, y_test = prepare_data_test(name)
+        print("now start to do test for: " + str(parameters.testfolder) + "\n")
 
-        a = model.predict(X_test, batch_size=32, verbose=2)
+        directory = "./nTrain"
 
-        counto, countp2, iou, diametervd, diameterhd = calculatearea(a, name)
+        K.set_image_data_format('channels_last') 
+        
+        smooth=1.
+        #model = load_model('/media/zlab-1/Data/Lian/keras/EP/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+        model = load_model(directory+'/weights1_test' + str(parameters.testfolder) + '.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+        
+        for name in ['EP', 'Larva', 'AD']:
 
-        #for larva maybe skip?
-        np.save('./diameter' + name + '.npy', diametervd)
+            X_test, y_test = prepare_data_test(name)
 
-        plotresults(counto, countp2, iou, diametervd, diameterhd, name)
+            a = model.predict(X_test, batch_size=32, verbose=2)
+
+            counto, countp2, iou, diametervd, diameterhd = calculatearea(a, name)
+
+            #for larva maybe skip?
+            np.save('./resultimage/diameter' + name + '_' + str(parameters.testfolder) + '.npy', diametervd)
+
+            plotresults(counto, countp2, iou, diametervd, diameterhd, name + '_' + str(parameters.testfolder))
+        K.clear_session()
+    

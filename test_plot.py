@@ -198,12 +198,13 @@ def calculatearea(a, name):
 #Start with program
 if __name__ == '__main__':
     parameters = Parameters()
+    directory = "./nTrain"
 
     K.set_image_data_format('channels_last') 
 
     smooth=1.
     #model = load_model('/media/zlab-1/Data/Lian/keras/EP/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
-    model = load_model(parameters.directory+'/weights1.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
+    model = load_model(directory+'/weights1_test' + str(parameters.testfolder) + '.h5', custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
 
     for name in ['EP', 'larva', 'AD']:
 
@@ -214,7 +215,7 @@ if __name__ == '__main__':
         counto, countp2, iou, diametervd, diameterhd = calculatearea(a, name)
 
         #for larva maybe skip?
-        np.save('./diameter' + name + '.npy', diametervd)
+        np.save('./diameter' + name + '_' + str(parameters.testfolder) + '.npy', diametervd)
 
-        plotresults(counto, countp2, iou, diametervd, diameterhd, name)
+        plotresults(counto, countp2, iou, diametervd, diameterhd, name + '_' + str(parameters.testfolder))
 

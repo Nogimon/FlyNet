@@ -146,21 +146,27 @@ def prepare_data(target, train, y, X_test, y_test):
     return train, y, X_test, y_test
 
 def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
+    xaxis = np.array(range(len(p_ground)))
+    parameters=Parameters()
+    xaxis = xaxis/parameters.timefactor-1
+
     #p_ground = p_ground[start:end]
     #p_count = p_count[start:end]
     #p_iou = p_iou[start:end]
 
     #diameterhd = diameterhd[:,start:end]
     #diametervd = diametervd[:,start:end]
-    xaxis = np.array(range(len(p_ground)))
-    parameters=Parameters()
-    xaxis = xaxis/parameters.timefactor
+
+
+    #plot individual pixel count and iou
+    '''
+    
     plt.figure(num = None, figsize = (8, 6), dpi = 200)
 
     plt.plot(xaxis,p_ground)#, color = 'darkgreen')
     plt.plot(xaxis,p_count)#, color = 'gold')
     #plt.savefig('./resultimage/pixelcount_'+time.asctime(time.localtime(time.time()))+name+'.png')
-    plt.savefig('./resultimage/pixelcount_'+name+'.png')
+    plt.savefig('./resultimage/pixelcount_'+name +'.png')
     plt.clf()
     #plt.gcf().clear()
 
@@ -170,6 +176,9 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     #plt.savefig('./resultimage/iou_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/iou_'+name+'.png')
     plt.clf()
+    '''
+
+
     '''
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
@@ -190,16 +199,20 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     plt.figure()
     
     gs = gridspec.GridSpec(5, 4)
-    gs.update(hspace = 0.4)
+    gs.update(hspace = 0.2)
     plt.subplot(gs[0 : 2, :])
     #XAxis.set_ticks_position(top)
     plt.tick_params(direction = 'in')
-    plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
-    plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
-    plt.title('ground truth & prediction Vs Time')
+    l1=plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
+    l2=plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
+    plt.title('ground truth & prediction Vs Time', fontsize=18,va='bottom',ha='center')
+    
+
     #plt.xlabel('Time(s)')
-    plt.ylabel('Area(um^2)')
+    plt.ylabel('Area('+r'$\mu{m}^2$'+')', fontsize=14,va='center',ha='center')
+    #plt.ticklabel_format(style='sci',axis='y',scilimits=(0,0))
     plt.xlim(0,xaxis[-1])
+    plt.gca().axes.xaxis.set_ticklabels([])
     #plt.axis([0,len(p_count),-1000,max(p_ground)*1.07])
     #ax1.plot(countp2)
     #ax1.set_ylabel('pixelcount')
@@ -218,19 +231,22 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
         #savenpy(diametervd[1], name)
     #plt.title('ground truth & prediction Vs Time')
     #plt.xlabel('Time(s)')
-    plt.ylabel('Diameter(um)')
+    
+    plt.ylabel('Diameter(um)', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
+    plt.gca().axes.xaxis.set_ticklabels([])
 
 
     plt.subplot(gs[4, :])
-    plt.plot(xaxis,p_iou, color = '#1B5E20')#33691E')# color = '#006064')
+    l3=plt.plot(xaxis,p_iou, color = '#1B5E20')#33691E')# color = '#006064')
     #plt.title('iou Vs Time')
-    plt.xlabel('Time(s)')
-    plt.ylabel('iou')
+    
+    plt.xlabel('Time(s)', fontsize=14)
+    plt.ylabel('Iou', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
     plt.ylim(0, 1)
-
-
+    plt.legend()
+    #plt.figlegend((l1,l2,l3),('GroudTruth','ModelPrediction','accuracy')'upper right')
     #plt.savefig('./resultimage/arearesult_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
@@ -296,6 +312,10 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
 
 def getbox(image):
     one = np.where(image > 150)
+    if one[0] == np.array([]):
+        print(one)
+        plt.imshow(image)
+
     vertdiameter = np.max(one[0]) - np.min(one[0])
     horidiameter = np.max(one[1]) - np.min(one[1])
     i = 0
@@ -312,18 +332,37 @@ def savenpy(data, savename):
 
 def findpeaks(data, step):
     #Find peaks
+    peak = []
+    peaks = []
     peaks = find_peaks_cwt(data, np.arange(1, step))
     peaks2 = find_peaks_cwt(-data, np.arange(1, step))
+
+    if len(peaks) == 0:
+        print("peaks not found")
+        peaks = np.zeros(1)
+    if len(peaks2) == 0:
+        print("peaks2 not found")
+        peaks2 = np.zeros(1)
+    peaks = peaks.astype(int)
+    peaks2 = peaks2.astype(int)
     #peaks = np.sort(np.asarray(peaks+peaks2))
+    high = (np.vstack((peaks, np.asarray(data[peaks]))))
+    low = (np.vstack((peaks2, np.asarray(data[peaks2]))))
+
+    
+    '''
+    #plot the peak finding result
     #plt.figure()
     plt.plot(data, color = 'r')
-    high = (np.vstack((peaks, np.asarray(data[peaks]))))
-    low = np.vstack((peaks2, np.asarray(data[peaks2])))
+    
     #height = np.flip(np.rot90(height), axis = 0)
     plt.scatter(high[0], high[1])
     plt.scatter(low[0], low[1])
     plt.show()
     plt.gcf().clear()
+    '''
+
+
     #record height data
     high_ave = np.average(high[1])
     high_std = np.std(high[1])
@@ -331,5 +370,8 @@ def findpeaks(data, step):
     low_std = np.std(low[1])
     #calculate heart rate
     timerange = (peaks[-1] - peaks[0]) / 129.0
-    heartrate = len(peaks) / float(timerange)
+    if timerange == 0:
+        heartrate = 0
+    else:
+        heartrate = len(peaks) / float(timerange)
     return (heartrate, high_ave, high_std, low_ave, low_std)

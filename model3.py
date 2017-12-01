@@ -283,7 +283,7 @@ if __name__ == '__main__':
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
     #model_checkpoint = ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now())), monitor='val_loss', save_best_only=True)
     model_checkpoint = ModelCheckpoint(directory+'/weights1_test' + str(parameters.testfolder) + '.h5', monitor='val_loss', save_best_only=True)
-    earlystop = EarlyStopping(monitor='val_loss', patience=5, mode='auto')
+    earlystop = EarlyStopping(monitor='val_loss', patience=3, mode='auto')
     
     
 
