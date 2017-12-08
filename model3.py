@@ -264,6 +264,7 @@ def get_model():
 	conv10 = Conv2D(1, (1, 1), activation='sigmoid')(conv9)
 
 	model = Model(inputs=[inputs], outputs=[conv10])
+    #model.layers[2].trainable = False
 	return model
 
 

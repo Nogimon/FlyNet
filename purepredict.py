@@ -143,11 +143,9 @@ if __name__ == '__main__':
     #import Image
     START = 0
     END = 2000
-    #im = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.tiff')
+    directory = "./Purepredict/AD/S01.tiff"
 
-
-    #im = io.imread('./Purepredict/SHR_HCM1- 1_OD_U-3D_ 4x 0_R01.tiff')
-    im = io.imread('./Purepredict/SHR_HCM1+5_OD_U-3D_ 4x 0_R01.tiff')
+    im = io.imread(directory)
 
 
     #SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R01/SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R02.tiff')
@@ -159,37 +157,12 @@ if __name__ == '__main__':
     X_test = []
     y_test = []
     #for i in range(len(im)):
-    for i in range(2000):
+    for i in range(END-START+1):
         X_test.append(cv2.resize(im[i], (128, 128), cv2.INTER_LINEAR))
         #y_test.append(cv2.resize(gt[i], (128, 128), cv2.INTER_LINEAR))
     X_test = np.asarray(X_test)
     X_test=X_test[...,np.newaxis] 
-    #y_test = np.asarray(y_test)
-    #y_test = y_test[...,np.newaxis]    
-
-    '''
-    y_test=[]
-    for i in folder1:
-        print(i)
-        file=sorted(glob(i+'*.png'))
-        for j in file:
-            name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            #resized = img
-
-            if name.replace('.png','').isdigit() == True:
-                X_test.append(resized)
-            if name.replace('.png','').isdigit() == False:
-                y_test.append(resized)
-
-    X_test=np.asarray(X_test)
-    y_test=np.asarray(y_test)
-    X_test=X_test[...,np.newaxis]
-    y_test=y_test[...,np.newaxis]
-    '''
-
+    
 
 
     K.set_image_data_format('channels_last') 
@@ -199,7 +172,7 @@ if __name__ == '__main__':
     smooth=1.
 
 
-    X_test = X_test[START:END]
+    #X_test = X_test[START:END]
 
     model = load_model(loadmodeldir, custom_objects={'dice_coef_loss':dice_coef,'dice_coef':dice_coef})
 
