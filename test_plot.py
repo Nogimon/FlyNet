@@ -217,5 +217,8 @@ if __name__ == '__main__':
         #for larva maybe skip?
         np.save('./diameter' + name + '_' + str(parameters.testfolder) + '.npy', diametervd)
 
-        plotresults(counto, countp2, iou, diametervd, diameterhd, name + '_' + str(parameters.testfolder))
+        if name == 'larva':
+            plotresults(counto, countp2, iou, diameterhd, name + '_' + str(parameters.testfolder))
+        else:
+            plotresults(counto, countp2, iou, diametervd, name + '_' + str(parameters.testfolder))
 

@@ -34,7 +34,7 @@ class Parameters:
     '''
 
     #y direction um/pixel
-    yfactor = 1.12
+    yfactor = 1.12 * 200 / 128
     #x direction um/pixel
     xfactor = 2.2
     #time frames/second

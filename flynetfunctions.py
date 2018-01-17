@@ -145,7 +145,7 @@ def prepare_data(target, train, y, X_test, y_test):
     
     return train, y, X_test, y_test
 
-def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
+def plotresults(p_ground, p_count, p_iou, diametervd, name):
     xaxis = np.array(range(len(p_ground)))
     parameters=Parameters()
     xaxis = xaxis/parameters.timefactor-1
@@ -195,7 +195,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     plt.savefig('./resultimage/testresult_'+name+'.png')
     plt.clf()
     '''
-
+    '''
     plt.figure()
     
     gs = gridspec.GridSpec(5, 4)
@@ -221,14 +221,15 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     #ax2.set_ylabel('IOU',color='#7f7f7f')
     #plt.title(name + 'Heart Area Change')
     plt.subplot(gs[2: 4, :])
-    if (name == 'larva'):
-        plt.plot(xaxis,diameterhd[0], label = 'GroudTruth')#, color = '#006064')
-        plt.plot(xaxis,diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
-        #savenpy(diameterhd[1], name)
-    else:
-        plt.plot(xaxis,diametervd[0], label = 'GroudTruth')#, color = '#006064')
-        plt.plot(xaxis,diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
-        #savenpy(diametervd[1], name)
+
+    #if (name == 'larva'):
+    #    plt.plot(xaxis,diameterhd[0], label = 'GroudTruth')#, color = '#006064')
+    #    plt.plot(xaxis,diameterhd[1], label = 'ModelPrediction')#, color = '#F57C00')
+    #savenpy(diameterhd[1], name)
+    
+    plt.plot(xaxis,diametervd[0], label = 'GroudTruth')#, color = '#006064')
+    plt.plot(xaxis,diametervd[1], label = 'ModelPrediction')#, color = '#F57C00')
+    #savenpy(diametervd[1], name)
     #plt.title('ground truth & prediction Vs Time')
     #plt.xlabel('Time(s)')
     
@@ -245,15 +246,24 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
     plt.ylabel('Iou', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
     plt.ylim(0, 1)
-    plt.legend()
-    #plt.figlegend((l1,l2,l3),('GroudTruth','ModelPrediction','accuracy')'upper right')
+    #plt.legend()
+    plt.figlegend((l1,l2,l3),('GroudTruth','ModelPrediction','accuracy'),'upper right')
     #plt.savefig('./resultimage/arearesult_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
-
+    '''
 
 
     #savenpy(diameter)
+
+
+    plt.figure()
+    plt.plot(xaxis,p_iou, label = 'GroudTruth')#, color = '#006064')
+    plt.plot(xaxis, p_iou, label = 'ModelPrediction')#, color = '#F57C00')
+    plt.plot(xaxis, p_iou, label = "IOU", color = '#1B5E20')
+    plt.legend()
+    plt.savefig('./resultimage/arearesult_'+name+'legend.png')
+    plt.clf()
 
 
     '''
@@ -312,10 +322,6 @@ def plotresults(p_ground, p_count, p_iou, diametervd, diameterhd, name):
 
 def getbox(image):
     one = np.where(image > 150)
-    if one[0] == np.array([]):
-        print(one)
-        plt.imshow(image)
-
     vertdiameter = np.max(one[0]) - np.min(one[0])
     horidiameter = np.max(one[1]) - np.min(one[1])
     i = 0

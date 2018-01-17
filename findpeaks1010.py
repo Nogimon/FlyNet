@@ -22,8 +22,8 @@ def plotbar(highgt, lowgt, highstdgt, lowstdgt, ylabel):
     index = np.arange(n_groups)
     bar_width = 0.35
     error_config = {'ecolor': '0.3'}
-    rects1 = plt.bar(index + bar_width, highgt, bar_width, color = '#3f51b5', yerr = highstdgt, error_kw=error_config, label = 'GroundTruth')
-    rects2 = plt.bar(index + 2 * bar_width, lowgt, bar_width, color = '#ff7043', yerr = lowstdgt, error_kw=error_config, label = 'Prediction')
+    rects1 = plt.bar(index + bar_width, highgt, bar_width, color = '#3f51b5', yerr = highstdgt, error_kw=error_config, label = 'Manully Labeling')
+    rects2 = plt.bar(index + 2 * bar_width, lowgt, bar_width, color = '#ff7043', yerr = lowstdgt, error_kw=error_config, label = 'Model Prediction')
     plt.xlabel('Types of fly')
     plt.ylabel(ylabel)
     plt.xticks(index + 1.5 * bar_width, ('Larva', 'Pupa', 'Adult'))

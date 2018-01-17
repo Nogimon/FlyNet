@@ -17,7 +17,7 @@ from keras import backend as K
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 import matplotlib.pyplot as plt
 from skimage import io
-from flynetfunctions import plotresults, getbox, findpeaks
+from flynetfunctions import plotresults, findpeaks
 from parameters import Parameters
 from skimage import morphology
 
@@ -32,7 +32,23 @@ def dice_coef_loss(y_true, y_pred):
     return -dice_coef(y_true, y_pred)
 
 
-def calculatearea(a, directory):
+def getbox(image):
+    one = np.where(image > 150)
+    if (len(one[0]) != 0):
+        vertdiameter = np.max(one[0]) - np.min(one[0])
+        horidiameter = np.max(one[1]) - np.min(one[1])
+    else:
+        vertdiameter = 0
+        horidiameter = 0
+    i = 0
+    if (horidiameter > 80):
+        plt.imshow(image)
+        plt.savefig("./test.png")
+        plt.close('all')
+    return (vertdiameter, horidiameter)
+
+
+def calculatearea(a, directory, name):
     #only deal with predicted data
     counto=[]
     countp=[]
@@ -130,34 +146,43 @@ def calculatearea(a, directory):
     np.save(figuredirectory +  'predict_iou.npy', iou)
 
 
-    plt.figure(num = None, figsize = (12, 6), dpi = 200)
-    plt.plot(countp2)
+    plt.figure(num = None, figsize = (15, 6), dpi = 200)
+    #plt.plot(diametervd)
+    plt.plot(diameterhd)
+    plt.ylabel("diameter")
+    plt.xlabel("frames")
     #plt.show()
-    plt.savefig('./Purepredict/predictresult.png')
+
+    plt.savefig('./Purepredict/predictresult' + name + '.png')
     plt.gcf().clear()
 
     return(countp2, diametervd, diameterhd)
 
 if __name__ == '__main__':
 
-    #import Image
-    START = 0
-    END = 2000
-    directory = "./Purepredict/AD/S01.tiff"
+    #set parameter
+    CROPSTART = 95
+    CROPEND = CROPSTART + 200
+    name = 'S02'
+    directory = "./Purepredict/larva/" + name + ".tiff"
+    START = 500
+    END = 1500
+
+    #load data
 
     im = io.imread(directory)
 
 
     #SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R01/SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R02.tiff')
     #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
-    im = np.asarray(im[:,START:END,:])
+    im = np.asarray(im[START:END, CROPSTART:CROPEND,:])
     #loadmodel = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
     loadmodeldir = '/media/zlab-1/Data/Lian/keras/nData/weights1.h5'
 
     X_test = []
     y_test = []
     #for i in range(len(im)):
-    for i in range(END-START+1):
+    for i in range(END-START):
         X_test.append(cv2.resize(im[i], (128, 128), cv2.INTER_LINEAR))
         #y_test.append(cv2.resize(gt[i], (128, 128), cv2.INTER_LINEAR))
     X_test = np.asarray(X_test)
@@ -186,7 +211,9 @@ if __name__ == '__main__':
 
     figuredirectory = '/media/zlab-1/Data/Lian/keras/Purepredict/purepredictresult/'
 
-    countp2, diametervd, diameterhd = calculatearea(a, figuredirectory)
+    countp2, diametervd, diameterhd = calculatearea(a, figuredirectory, name)
+
+
 
     heartrate, high_ave, high_std, low_ave, low_std = findpeaks(diameterhd, 30)
 
