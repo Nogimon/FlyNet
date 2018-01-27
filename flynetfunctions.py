@@ -195,7 +195,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     plt.savefig('./resultimage/testresult_'+name+'.png')
     plt.clf()
     '''
-    '''
+    
     plt.figure()
     
     gs = gridspec.GridSpec(5, 4)
@@ -205,7 +205,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     plt.tick_params(direction = 'in')
     l1=plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
     l2=plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
-    plt.title('ground truth & prediction Vs Time', fontsize=18,va='bottom',ha='center')
+    plt.title('Ground Truth & Prediction vs Time', fontsize=18,va='bottom',ha='center')
     
 
     #plt.xlabel('Time(s)')
@@ -256,7 +256,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
 
     #savenpy(diameter)
 
-
+    
     plt.figure()
     plt.plot(xaxis,p_iou, label = 'GroudTruth')#, color = '#006064')
     plt.plot(xaxis, p_iou, label = 'ModelPrediction')#, color = '#F57C00')
@@ -264,7 +264,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     plt.legend()
     plt.savefig('./resultimage/arearesult_'+name+'legend.png')
     plt.clf()
-
+    '''
 
     '''
     plt.figure()

@@ -24,10 +24,13 @@ def plotbar(datagt, datapd, stdgt, stdpd, ylabel):
     error_config = {'ecolor': '0.3'}
     rects1 = plt.bar(index + bar_width, datagt, bar_width, color = '#3f51b5', yerr = np.multiply(stdgt,0.6), error_kw=error_config, label = 'Manually Labeling')
     rects2 = plt.bar(index + 2 * bar_width, datapd, bar_width, color = '#ff7043', yerr = np.multiply(stdpd,0.6), error_kw=error_config, label = 'Model Prediction')
-    plt.xlabel('Developmental Stages')
-    plt.ylabel(ylabel)
-    plt.xticks(index + 1.5 * bar_width, ('Larva', 'Pupa', 'Adult'))
-    plt.legend()
+    plt.xlabel('Developmental Stages', fontsize = 18)
+    plt.ylabel(ylabel, fontsize = 18)
+    plt.xticks(index + 1.5 * bar_width, ('Larva', 'Pupa', 'Adult'), size = 15)
+    if(ylabel == "Fraction Shortening"):
+        plt.legend(fontsize = 11.5)
+    else:
+        plt.legend(fontsize = 11.5, loc = 2)
     plt.tight_layout()
     plt.savefig('./resultimage/fig4_'+ylabel+'.png')
 #    plt.show()
