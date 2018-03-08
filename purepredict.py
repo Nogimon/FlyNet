@@ -165,8 +165,8 @@ if __name__ == '__main__':
     CROPEND = CROPSTART + 200
     name = 'S02'
     directory = "./Purepredict/larva/" + name + ".tiff"
-    START = 500
-    END = 1500
+    START = 000
+    END = 4000
 
     #load data
 
