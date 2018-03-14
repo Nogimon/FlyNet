@@ -161,10 +161,11 @@ def calculatearea(a, directory, name):
 if __name__ == '__main__':
 
     #set parameter
-    CROPSTART = 95
+    CROPSTART = 220
     CROPEND = CROPSTART + 200
     name = 'S02'
-    directory = "./Purepredict/larva/" + name + ".tiff"
+    #directory = "./Purepredict/larva/" + name + ".tiff"
+    directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.173,share=data/Lian/flyheart/newdata/processed/SHR_S02_HCM1-_LA_OD_U-3D_ 4x 0_R01.tiff"
     START = 000
     END = 4000
 
@@ -177,7 +178,7 @@ if __name__ == '__main__':
     #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
     im = np.asarray(im[START:END, CROPSTART:CROPEND,:])
     #loadmodel = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
-    loadmodeldir = '/media/zlab-1/Data/Lian/keras/nData/weights1.h5'
+    loadmodeldir = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
 
     X_test = []
     y_test = []
