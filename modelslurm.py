@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from matplotlib.axis import XAxis
 from skimage import transform
-from parameters import Parameters
 
 class Parameters:
     directory = "./"
@@ -47,7 +46,7 @@ class Parameters:
     testfolder = 9
 
 def generatefolders(name):
-    directory = "./nTrain" + name
+    directory = "./nTrain/" + name
     
     folders=sorted(glob(directory+"/*/"))
     return folders
