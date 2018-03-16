@@ -1,5 +1,4 @@
 
-from datetime import datetime
 from PIL import Image
 import numpy as np
 import os
@@ -17,9 +16,38 @@ from matplotlib.axis import XAxis
 from skimage import transform
 from parameters import Parameters
 
+class Parameters:
+    directory = "./"
+    directory2 = "./AD"
+    trainstartEP = 31
+    trainendEP = 33
+    #One good pick: 25-26
+    teststartEP = 31
+    testendEP = 32
+    valEP =[]
+    trainstartLA = 47
+    trainendLA = 52
+    teststartLA = 50
+    testendLA = 51
+    valLA =[]
+    trainstartAD = -12
+    trainendAD = -10
+    teststartAD = -11
+    testendAD = -10
+    valAD =[]
+
+    #y direction um/pixel
+    yfactor = 1.12 * 200 / 128
+    #x direction um/pixel
+    xfactor = 2.2
+    #time frames/second
+    timefactor = 129.9
+
+    valifolder = 8
+    testfolder = 9
 
 def generatefolders(name):
-    directory = "/media/zlab-1/Data/Lian/keras/nTrain/" + name
+    directory = "./nTrain" + name
     
     folders=sorted(glob(directory+"/*/"))
     return folders
@@ -306,7 +334,7 @@ def generateData():
         y_test= np.vstack((y_test, y_test1))
 
     # Add new data
-    foldernew = "/media/zlab-1/Data/Lian/keras/nTrain/newfly/"
+    foldernew = "./nTrain/newfly/"
     train1, y1 = generatetrainnew(foldernew)
 
     train = np.vstack((train, train1))
@@ -396,8 +424,7 @@ if __name__ == '__main__':
     smooth=1.
     model=get_model()
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
-    #model_checkpoint = ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now())), monitor='val_loss', save_best_only=True)
-    model_checkpoint = ModelCheckpoint(directory+'/weights_new3' + str(parameters.testfolder) + '.h5', monitor='val_loss', save_best_only=True)
+    model_checkpoint = ModelCheckpoint(directory+'/weights_cluster.h5', monitor='val_loss', save_best_only=True)
     earlystop = EarlyStopping(monitor='val_loss', patience=3, mode='auto')
     
     
@@ -407,25 +434,3 @@ if __name__ == '__main__':
 
     #Test
     #a=model.predict(X_test, batch_size=32, verbose=2)
-
-
-
-
-
-
-
-
-
-'''
-
-    history=model.fit(x, y, 
-        batch_size=32, 
-        epochs=150, 
-        verbose=1, 
-        shuffle=True,
-        callbacks=[ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now()),history[-1,1]), monitor='val_loss', save_best_only=True), 
-        EarlyStopping(monitor='val_loss', patience=5, mode='auto')],
-        validation_data=(x_val[_], y_val[_]))
-'''
-
-
