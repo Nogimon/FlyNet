@@ -3,14 +3,14 @@ from PIL import Image
 import numpy as np
 import os
 from glob import glob
-import cv2
+
 from keras.models import Model
 from keras.layers import Input, concatenate, Conv2D, MaxPooling2D, Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as K
 from keras.callbacks import ModelCheckpoint, EarlyStopping
-from skimage import transform
-import matplotlib.pyplot as plt
+
+
 
 #no cv2
 #no skimage
@@ -93,23 +93,27 @@ def generatetrainnew(foldernew):
         
         for j in fileo:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
+            img = Image.open(j)
+            width = img.size[0]
+            height = img.size[1]
 
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
+            #img = np.asarray(img.resize((128, 128)))
+            #train.append(img)
+                      
 
             #for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:,:], img[20:,20:], img[0:-20, 20:], img[20:, 0:-20]]:
-            for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:, :]]:
+            for img1 in [img, img.crop((10, 10, width-10, height-10)), img.crop((20, 10, width-20, height-10))]:
 
-                resized = cv2.resize(img1, (128, 128), cv2.INTER_LINEAR)
+                resized = np.asarray(img1.resize((128,128)))
                 train.append(resized)
                 
-                augmented = transform.rotate(resized, 90)
+                augmented = np.rot90(resized)
                 train.append(augmented)
             
-                augmented = transform.rotate(resized, 180)
+                augmented = np.rot90(augmented)
                 train.append(augmented)
             
-                augmented = transform.rotate(resized, 270)
+                augmented = np.rot90(augmented)
                 train.append(augmented)
 
                 for shift in [5, 10, 20, 30]:
@@ -129,28 +133,31 @@ def generatetrainnew(foldernew):
                     augmented = np.roll(resized, -shift, axis = 0)
                     augmented[-shift:,:] = 0
                     train.append(augmented)
+            
                 
                 
                 
         for j in filem:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            img = img / 255
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            # for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:,:], img[20:,20:], img[0:-20, 20:], img[20:, 0:-20]]:
-            for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:, :]]:
-                        
-                resized = cv2.resize(img1, (128, 128), cv2.INTER_LINEAR)
+            img = Image.open(j)
+
+            width = img.size[0]
+            height = img.size[1]
+            #for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:,:], img[20:,20:], img[0:-20, 20:], img[20:, 0:-20]]:
+            for img1 in [img, img.crop((10, 10, width-10, height-10)), img.crop((20, 10, width-20, height-10))]:
+
+                resized = np.asarray(img1.resize((128,128)))
+                resized = resized / 255
                 y.append(resized)
                 
-                augmented = transform.rotate(resized, 90)
+                augmented = np.rot90(resized)
                 y.append(augmented)
             
-                augmented = transform.rotate(resized, 180)
+                augmented = np.rot90(augmented)
                 y.append(augmented)
             
-                augmented = transform.rotate(resized, 270)
-                y.append(augmented)
+                augmented = np.rot90(augmented)
+                y.append(augmented)            
 
                 for shift in [5, 10, 20, 30]:
             
@@ -169,8 +176,7 @@ def generatetrainnew(foldernew):
                     augmented = np.roll(resized, -shift, axis = 0)
                     augmented[-shift:,:] = 0
                     y.append(augmented)
-    
-
+               
 
     train=np.asarray(train)
     y=np.asarray(y)
@@ -191,16 +197,16 @@ def generatetrain(foldertrain):
         k = 0
         for j in fileo:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
+            img = Image.open(j)
+            resized = np.asarray(img.resize((128, 128)))
+
             
             if (k%7==0):
-                augmented = transform.rotate(resized, 90)
+                augmented = np.rot90(resized, 1)
             elif (k%7==1):
-                augmented = transform.rotate(resized, 180)
+                augmented = np.rot90(resized, 2)
             elif (k%7==2):
-                augmented = transform.rotate(resized, 270)
+                augmented = np.rot90(resized, 3)
             elif (k%7==3):
                 augmented = np.roll(resized, shift, axis = 1)
                 augmented[:,0:shift] = 0
@@ -219,19 +225,21 @@ def generatetrain(foldertrain):
             train.append(augmented)
             
             k+=1
+            
         k = 0
         for j in filem:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
+            img = Image.open(j)
+            resized = np.asarray(img.resize((128, 128)))
+
+            
             
             if (k%7==0):
-                augmented = transform.rotate(resized, 90)
+                augmented = np.rot90(resized, 1)
             elif (k%7==1):
-                augmented = transform.rotate(resized, 180)
+                augmented = np.rot90(resized, 2)
             elif (k%7==2):
-                augmented = transform.rotate(resized, 270)
+                augmented = np.rot90(resized, 3)
             elif (k%7==3):
                 augmented = np.roll(resized, shift, axis = 1)
                 augmented[:,0:shift] = 0
@@ -252,6 +260,7 @@ def generatetrain(foldertrain):
             
             y.append(resized)
             y.append(augmented)
+            
         
     
     
@@ -272,9 +281,10 @@ def generatevalidate(foldervalidate):
 
         for j in file:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
+            img = Image.open(j)
+            resized = np.asarray(img.resize((128, 128)))
+
+            
             #resized = img
 
             if name.replace('.png','').isdigit() == True:
@@ -296,9 +306,9 @@ def generatetest(foldertest):
         file=glob(i+'*.png')
         for j in file:
             name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
+            img = Image.open(j)
+            resized = np.asarray(img.resize((128, 128)))
+
     
             if name.replace('.png','').isdigit() == True:
                 X_test.append(resized)
@@ -423,7 +433,7 @@ if __name__ == '__main__':
     smooth=1.
     model=get_model()
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
-    model_checkpoint = ModelCheckpoint(directory+'/weights_cluster.h5', monitor='val_loss', save_best_only=True)
+    model_checkpoint = ModelCheckpoint(directory+'/weights_cluster2.h5', monitor='val_loss', save_best_only=True)
     earlystop = EarlyStopping(monitor='val_loss', patience=3, mode='auto')
     
     
