@@ -163,16 +163,16 @@ if __name__ == '__main__':
 
     #set parameter
     VERTIRANGE = 140
-    CROPSTART = 210
+    CROPSTART = 190
     CROPEND = CROPSTART + VERTIRANGE
     HORIRANGE = 100
-    name = 'S22'
+    name = 'S06'
     #directory = "./Purepredict/larva/" + name + ".tiff"
     
     #Diskstation2
     #directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.173,share=data/Lian/flyheart/newdata/processed/SHR_S13_HCM2+_LA_OD_U-3D_ 4x 0_R01.tiff"
     #Diskstation3
-    directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.184,share=home/Zlab-NAS3/Kate/262018/Larva/HCM2+/" + name +  "/SHR_" + name + "_HCM2+_LA_OD_U-3D_ 4x 0_R01.tiff"
+    directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.184,share=home/Zlab-NAS3/Kate/262018/Larva/HCM2-/" + name +  "/SHR_" + name + "_HCM2-_LA_OD_U-3D_ 4x 0_R01.tiff"
     START = 000
     END = 4000
 
@@ -189,7 +189,7 @@ if __name__ == '__main__':
     #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
     im = np.asarray(im[START:END, CROPSTART:CROPEND, (128 - HORIRANGE)/2:(HORIRANGE - 128)/2])
     #loadmodel = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
-    loadmodeldir = '/media/zlab-1/Data/Lian/keras/Purepredict/weights_new49.h5'
+    loadmodeldir = '/media/zlab-1/Data/Lian/keras/Purepredict/weights_new59.h5'
 
     X_test = []
     y_test = []

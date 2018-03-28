@@ -42,7 +42,7 @@ class DataGenerator:
                     resizedy = np.asarray(imgy.resize((128, 128)))
                     if(resizedy.max() == 255):
                         resizedy = resizedy / 255
-                        print(i)
+                        #print(i)
 
 
                     X = resized[np.newaxis,...,np.newaxis]
@@ -50,3 +50,106 @@ class DataGenerator:
 
 
                     yield (X, y)
+
+
+    def dataGenerateWithAug(self, directory):
+        while 1:
+            print("!!!!!Now Starts with a new round!!!!!")
+            folders = sorted(glob(directory + "/*/*/"))
+            shuffle(folders)
+
+            
+
+            for i in folders:
+
+                
+
+                #print(i)
+                fileo = sorted(glob(i+'*[0-9].png'))
+                filem = sorted(glob(i+'*mask.png'))
+                #print(len(fileo))
+                #print(len(filem))
+                for j in range(len(fileo)):
+                    train = []
+                    y = []
+
+
+                    img = Image.open(fileo[j])
+                    resized = np.asarray(img.resize((128, 128)))
+
+                    train.append(resized)
+
+                    augmented = np.rot90(resized)
+                    train.append(augmented)
+
+                    augmented = np.rot90(augmented)
+                    train.append(augmented)
+                
+                    augmented = np.rot90(augmented)
+                    train.append(augmented)
+
+                    for shift in [5, 10, 20, 30]:
+            
+                        augmented = np.roll(resized, shift, axis = 1)
+                        augmented[:,0:shift] = 0
+                        train.append(augmented)
+                    
+                        augmented = np.roll(resized, shift, axis = 0)
+                        augmented[0:shift,:] = 0
+                        train.append(augmented)
+                    
+                        augmented = np.roll(resized, -shift, axis = 1)
+                        augmented[:,-shift:] = 0
+                        train.append(augmented)
+                    
+                        augmented = np.roll(resized, -shift, axis = 0)
+                        augmented[-shift:,:] = 0
+                        train.append(augmented)
+
+
+
+                    imgy = Image.open(filem[j])
+                    resizedy = np.asarray(imgy.resize((128, 128)))
+                    if(resizedy.max() == 255):
+                        resizedy = resizedy / 255
+                        #print(i)
+
+                    y.append(resizedy)
+
+                    augmented = np.rot90(resizedy)
+                    y.append(augmented)
+
+                    augmented = np.rot90(augmented)
+                    y.append(augmented)
+                
+                    augmented = np.rot90(augmented)
+                    y.append(augmented)
+
+                    for shift in [5, 10, 20, 30]:
+            
+                        augmented = np.roll(resizedy, shift, axis = 1)
+                        augmented[:,0:shift] = 0
+                        y.append(augmented)
+                    
+                        augmented = np.roll(resizedy, shift, axis = 0)
+                        augmented[0:shift,:] = 0
+                        y.append(augmented)
+                    
+                        augmented = np.roll(resizedy, -shift, axis = 1)
+                        augmented[:,-shift:] = 0
+                        y.append(augmented)
+                    
+                        augmented = np.roll(resizedy, -shift, axis = 0)
+                        augmented[-shift:,:] = 0
+                        y.append(augmented)
+
+
+
+
+                    train = np.asarray(train)
+                    y = np.asarray(y)
+                    train = train[...,np.newaxis]
+                    y = y[...,np.newaxis]
+
+
+                    yield (train, y)

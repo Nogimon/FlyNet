@@ -18,36 +18,6 @@ from skimage import transform
 from parameters import Parameters
 
 
-def generatefolders(name):
-    directory = "/media/zlab-1/Data/Lian/keras/nTrain/" + name
-    
-    folders=sorted(glob(directory+"/*/"))
-    return folders
-
-def prepare_data(name):
-
-    folders = generatefolders(name)
-           
-    
-    foldertrain = folders[:]
-    foldervalidate = folders[parameters.valifolder:parameters.valifolder+1]
-    foldertest = folders[parameters.testfolder:parameters.testfolder+1]
-    #foldertrain = folders - foldertest - foldervalidate
-    del foldertrain[parameters.valifolder]
-    del foldertrain[parameters.testfolder]
-
-    train, y = generatetrain(foldertrain)
-    X_validate, y_validate = generatevalidate(foldervalidate)
-    X_test, y_test = generatetest(foldertest)
-
-
-
-
-
-
-    
-    return (train, y, X_validate, y_validate, X_test, y_test)
-
 def generatetrainnew(foldernew):
 
     folders = sorted(glob(foldernew + "*/"))
@@ -85,7 +55,7 @@ def generatetrainnew(foldernew):
                 augmented = transform.rotate(resized, 270)
                 train.append(augmented)
 
-                for shift in [20, 30]:
+                for shift in [5, 20, 30]:
             
                     augmented = np.roll(resized, shift, axis = 1)
                     augmented[:,0:shift] = 0
@@ -125,7 +95,7 @@ def generatetrainnew(foldernew):
                 augmented = transform.rotate(resized, 270)
                 y.append(augmented)
 
-                for shift in [20, 30]:
+                for shift in [5, 20, 30]:
             
                     augmented = np.roll(resized, shift, axis = 1)
                     augmented[:,0:shift] = 0
@@ -150,165 +120,14 @@ def generatetrainnew(foldernew):
 
     return (train, y)
 
-def generatetrain(foldertrain):
-    train=[]
-    y=[]
-    #generate train data
-    shift = 10
-    for i in foldertrain:
-        print(i)
-        fileo = sorted(glob(i+'*[0-9].png'))
-        filem = sorted(glob(i+'*mask.png'))
-        print(len(fileo))
-        print(len(filem))
-        k = 0
-        for j in fileo:
-            name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            
-            if (k%7==0):
-                augmented = transform.rotate(resized, 90)
-            elif (k%7==1):
-                augmented = transform.rotate(resized, 180)
-            elif (k%7==2):
-                augmented = transform.rotate(resized, 270)
-            elif (k%7==3):
-                augmented = np.roll(resized, shift, axis = 1)
-                augmented[:,0:shift] = 0
-            elif (k%7==4):
-                augmented = np.roll(resized, shift, axis = 0)
-                augmented[0:shift,:] = 0
-            elif (k%7==5):
-                augmented = np.roll(resized, -shift, axis = 1)
-                augmented[:,-shift:] = 0
-            elif (k%7==6):
-                augmented = np.roll(resized, -shift, axis = 0)
-                augmented[-shift:,:] = 0
-            
-
-            train.append(resized)
-            train.append(augmented)
-            
-            k+=1
-        k = 0
-        for j in filem:
-            name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            
-            if (k%7==0):
-                augmented = transform.rotate(resized, 90)
-            elif (k%7==1):
-                augmented = transform.rotate(resized, 180)
-            elif (k%7==2):
-                augmented = transform.rotate(resized, 270)
-            elif (k%7==3):
-                augmented = np.roll(resized, shift, axis = 1)
-                augmented[:,0:shift] = 0
-            elif (k%7==4):
-                augmented = np.roll(resized, shift, axis = 0)
-                augmented[0:shift,:] = 0
-            elif (k%7==5):
-                augmented = np.roll(resized, -shift, axis = 1)
-                augmented[:,-shift:] = 0
-            elif (k%7==6):
-                augmented = np.roll(resized, -shift, axis = 0)
-                augmented[-shift:,:] = 0
-            
-
-
-            
-            k+=1
-            
-            y.append(resized)
-            y.append(augmented)
-        
-    
-    
-    train=np.asarray(train)
-    y=np.asarray(y)
-
-    return (train, y)
-
-def generatevalidate(foldervalidate):
-    X_validate=[]
-    y_validate=[]
-     #generate validate data
-    for i in foldervalidate:
-        print("the validate data is", i)
-        file=sorted(glob(i+'*.png'))
-        print("number of files is ", len(file) / 2)
-        #testcount.append(len(file) / 2)
-
-        for j in file:
-            name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-            #resized = img
-
-            if name.replace('.png','').isdigit() == True:
-                X_validate.append(resized)
-            if name.replace('.png','').isdigit() == False:
-                y_validate.append(resized)
-
-    X_validate=np.asarray(X_validate)
-    y_validate = np.asarray(y_validate)
-
-    return (X_validate, y_validate)
-
-def generatetest(foldertest):
-    X_test = []
-    y_test = []
-    #generate test data
-    for i in foldertest:
-        print("the test data is", i)
-        file=glob(i+'*.png')
-        for j in file:
-            name=os.path.basename(j)
-            img=np.asarray(Image.open(j))
-            #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
-            resized = cv2.resize(img, (128, 128), cv2.INTER_LINEAR)
-    
-            if name.replace('.png','').isdigit() == True:
-                X_test.append(resized)
-            if name.replace('.png','').isdigit() == False:
-                y_test.append(resized)
-    
-    X_test=np.asarray(X_test)
-    y_test=np.asarray(y_test)
-
-    return (X_test, y_test)
-
 
 def generateData():
-
-    name = "Larva"
-    train, y, X_validate, y_validate, X_test, y_test = prepare_data(name)
-    '''
-    train=[]
-    y=[]
-    X_validate=[]
-    y_validate=[]
-    X_test = []
-    y_test = []
-    '''
-    for name in ["EP", "AD"]:
-        train1, y1, X_validate1, y_validate1, X_test1, y_test1 = prepare_data(name)
-        train = np.vstack((train, train1))
-        y = np.vstack((y,y1))
-        X_validate= np.vstack((X_validate, X_validate1))
-        y_validate= np.vstack((y_validate,y_validate1))
-        X_test= np.vstack((X_test, X_test1))
-        y_test= np.vstack((y_test, y_test1))
-
-    np.save("./train.npy", train)
-    np.save("./y.npy", y)
-    np.save("./X_validate.npy", X_validate)
-    np.save("./y_validate.npy", y_validate)
+    #The npy was created with valifolder = 8, testfolder = 9
+    train = np.load("./train.npy")
+    y = np.load("./y.npy")
+    X_validate = np.load("./X_validate.npy")
+    y_validate = np.load("./y_validate.npy")
+    print("sucessfully loaded old train data")
 
     # Add new data
     foldernew = "/media/zlab-1/Data/Lian/keras/nTrain/newfly/"
@@ -319,17 +138,14 @@ def generateData():
 
     train=np.asarray(train)
     y=np.asarray(y)
-    X_validate=np.asarray(X_validate)
-    y_validate = np.asarray(y_validate)
-    X_test=np.asarray(X_test)
-    y_test=np.asarray(y_test)
+    
     train=train[...,np.newaxis]
     y=y[...,np.newaxis]
-    X_test=X_test[...,np.newaxis]
-    y_test=y_test[...,np.newaxis]
-
     X_validate=X_validate[...,np.newaxis]
     y_validate=y_validate[...,np.newaxis]
+    #This file does not use test
+    X_test = []
+    y_test = []
 
     return (train, y, X_validate, y_validate, X_test, y_test)
 
@@ -402,13 +218,13 @@ if __name__ == '__main__':
     model=get_model()
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
     #model_checkpoint = ModelCheckpoint(directory+'/weights1-{}-.h5'.format(str(datetime.now())), monitor='val_loss', save_best_only=True)
-    model_checkpoint = ModelCheckpoint(directory+'/weights_new5' + str(parameters.testfolder) + '.h5', monitor='val_loss', save_best_only=True)
+    model_checkpoint = ModelCheckpoint(directory+'/weights_new6' + str(parameters.testfolder) + '.h5', monitor='val_loss', save_best_only=True)
     earlystop = EarlyStopping(monitor='val_loss', patience=3, mode='auto')
     
     
 
     #Train
-    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_test, y_test))
+    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_validate, y_validate))
 
     #Test
     #a=model.predict(X_test, batch_size=32, verbose=2)
