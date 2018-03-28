@@ -19,6 +19,6 @@
 
 cd /home/lid315/keras
 
-module load python/cse498
+module load anaconda/mldl
 
-python ./modelslurmg.py > outputofaugment.out
+srun -n1 -c2 ./modelslurm.py > output.out
