@@ -48,7 +48,7 @@ def getbox(image):
     return (vertdiameter, horidiameter)
 
 
-def calculatearea(a, directory, name, VERTIRANGE, HORIRANGE):
+def calculatearea(a, directory, name):
     #only deal with predicted data
     counto=[]
     countp=[]
@@ -109,10 +109,10 @@ def calculatearea(a, directory, name, VERTIRANGE, HORIRANGE):
         #print(Image.getbbox(b1))
         '''
 
-        dst = cv2.resize(c1, (HORIRANGE, VERTIRANGE), cv2.INTER_LINEAR)
-        img = cv2.resize(X_test[i], (HORIRANGE, VERTIRANGE), cv2.INTER_LINEAR)
-        cv2.imwrite(figuredirectory+'/{}.jpg'.format(format(i,'05')),dst)
-        cv2.imwrite(figuredirectory+'/{}_original.jpg'.format(format(i,'05')),img)
+        
+        dst = cc
+        cv2.imwrite(figuredirectory+'{}.jpg'.format(format(i,'05')),dst)
+        cv2.imwrite(figuredirectory+'{}_original.jpg'.format(format(i,'05')),X_test[i])
         
 
     #counthdo= np.asarray(counthdo)
@@ -143,8 +143,8 @@ def calculatearea(a, directory, name, VERTIRANGE, HORIRANGE):
     diameterhd = diameterhd * parameters.xfactor
 
     print(np.average(iou))
-    #np.save(figuredirectory + 'predict_markresult.npy', countp)
-    #np.save(figuredirectory +  'predict_iou.npy', iou)
+    np.save(figuredirectory + 'predict_markresult.npy', countp)
+    np.save(figuredirectory +  'predict_iou.npy', iou)
 
 
     plt.figure(num = None, figsize = (15, 6), dpi = 200)
@@ -154,7 +154,7 @@ def calculatearea(a, directory, name, VERTIRANGE, HORIRANGE):
     plt.xlabel("frames")
     #plt.show()
 
-    plt.savefig(figuredirectory + "/" + name + '.png')
+    plt.savefig('./Purepredict/predictresult' + name + '.png')
     plt.gcf().clear()
 
     return(countp2, diametervd, diameterhd)
@@ -162,24 +162,14 @@ def calculatearea(a, directory, name, VERTIRANGE, HORIRANGE):
 if __name__ == '__main__':
 
     #set parameter
-    VERTIRANGE = 100
     CROPSTART = 160
-    CROPEND = CROPSTART + VERTIRANGE
-    HORIRANGE = 80
-    name = 'S05'
+    CROPEND = CROPSTART + 200
+    name = 'S02'
     #directory = "./Purepredict/larva/" + name + ".tiff"
-    
-    #Diskstation2
-    #directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.173,share=data/Lian/flyheart/newdata/processed/SHR_S13_HCM2+_LA_OD_U-3D_ 4x 0_R01.tiff"
-    #Diskstation3
-    
-    directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.184,share=home/Luisa/Baddata/S05.tiff"#Zlab-NAS3/Kate/262018/Larva/HCM2-/" + name +  "/SHR_" + name + "_HCM2-_LA_OD_U-3D_ 4x 0_R01.tiff"
+    #directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.173,share=data/Lian/flyheart/newdata/processed/SHR_S02_HCM1-_LA_OD_U-3D_ 4x 0_R01.tiff"
+    directory = "/run/user/1000/gvfs/smb-share:server=128.180.65.184,share=home/Zlab-NAS3/Kate/262018/Adult/HCM1+AD/S01/SHR_S01_HCM1+_AD1_OD_U-3D_ 4x 0_R01.tiff"
     START = 000
     END = 4000
-
-    splitname = directory.split("/")
-    newfolder = splitname[-1][0:-5]
-    print("The file being processed is:" + newfolder)
 
     #load data
 
@@ -188,9 +178,9 @@ if __name__ == '__main__':
 
     #SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R01/SHR_put_AD_125um_m_OD_U-3D_ 4x 0_R02.tiff')
     #gt = io.imread(r'/media/zlab-1/Data/Lian/keras/Purepredict/SHR_S02-la-4.5-5-5.5-20ms-100%_OD_U-3D_ 4x 0_R02.Labels.tif')
-    im = np.asarray(im[START:END, CROPSTART:CROPEND, (128 - HORIRANGE)/2:(HORIRANGE - 128)/2])
-    #loadmodel = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
-    loadmodeldir = '/media/zlab-1/Data/Lian/keras/Purepredict/weights_new59.h5'
+    im = np.asarray(im[START:END, CROPSTART:CROPEND,:])
+    loadmodeldir = '/media/zlab-1/Data/Lian/keras/nTrain/weights1_test9.h5'
+    #loadmodeldir = '/media/zlab-1/Data/Lian/keras/Purepredict/newweights.h5'
 
     X_test = []
     y_test = []
@@ -220,18 +210,11 @@ if __name__ == '__main__':
 
 
     print('Total Number:',len(a))
-    print("The file being processed is:" + newfolder)
 
 
-    #figuredirectory = '/media/zlab-1/Data/Lian/keras/Purepredict/purepredictresult/'
+    figuredirectory = '/media/zlab-1/Data/Lian/keras/result0529/purepredict/'
 
-    
-    figuredirectory = directory[0:-len(splitname[-1])] + newfolder
-    if(os.path.exists(figuredirectory) == False):
-        os.makedirs(figuredirectory)
-    print(figuredirectory)
-
-    countp2, diametervd, diameterhd = calculatearea(a, figuredirectory, name, VERTIRANGE, HORIRANGE)
+    countp2, diametervd, diameterhd = calculatearea(a, figuredirectory, name)
 
 
 

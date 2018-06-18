@@ -289,7 +289,7 @@ if __name__ == '__main__':
     
 
     #Train
-    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_test, y_test))
+    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_validate, y_validate))
 
     #Test
     #a=model.predict(X_test, batch_size=32, verbose=2)

@@ -310,6 +310,7 @@ def generateData():
     np.save("./X_validate.npy", X_validate)
     np.save("./y_validate.npy", y_validate)
 
+    
     # Add new data
     foldernew = "/media/zlab-1/Data/Lian/keras/nTrain/newfly/"
     train1, y1 = generatetrainnew(foldernew)
@@ -408,7 +409,7 @@ if __name__ == '__main__':
     
 
     #Train
-    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_test, y_test))
+    model.fit(train, y, batch_size=32, epochs=150, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_validate, y_validate))
 
     #Test
     #a=model.predict(X_test, batch_size=32, verbose=2)

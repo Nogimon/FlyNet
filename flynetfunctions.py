@@ -203,7 +203,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     plt.subplot(gs[0 : 2, :])
     #XAxis.set_ticks_position(top)
     plt.tick_params(direction = 'in')
-    l1=plt.plot(xaxis,p_ground, label = 'GroudTruth')#, color = '#006064')
+    l1=plt.plot(xaxis,p_ground, label = 'GroundTruth')#, color = '#006064')
     l2=plt.plot(xaxis,p_count, label = 'ModelPrediction')#, color = '#F57C00')
     plt.title('Ground Truth & Prediction vs Time', fontsize=18,va='bottom',ha='center')
     
@@ -233,7 +233,7 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     #plt.title('ground truth & prediction Vs Time')
     #plt.xlabel('Time(s)')
     
-    plt.ylabel('Diameter(um)', fontsize=14,va='bottom',ha='center')
+    plt.ylabel('Diameter(' + r'$\mu$' + 'm)', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
     plt.gca().axes.xaxis.set_ticklabels([])
 
@@ -243,22 +243,23 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     #plt.title('iou Vs Time')
     
     plt.xlabel('Time(s)', fontsize=14)
-    plt.ylabel('Iou', fontsize=14,va='bottom',ha='center')
+    plt.ylabel('IOU', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
-    plt.ylim(0, 1)
+    plt.ylim(0.6, 1)
     #plt.legend()
-    plt.figlegend((l1,l2,l3),('GroudTruth','ModelPrediction','accuracy'),'upper right')
+    #plt.figlegend((l1,l2,l3),('GroundTruth','ModelPrediction','accuracy'),'best')
     #plt.savefig('./resultimage/arearesult_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
-    '''
+    
 
 
     #savenpy(diameter)
 
-    
+    '''
+    #This part is used only to generate the legend!
     plt.figure()
-    plt.plot(xaxis,p_iou, label = 'GroudTruth')#, color = '#006064')
+    plt.plot(xaxis,p_iou, label = 'GroundTruth')#, color = '#006064')
     plt.plot(xaxis, p_iou, label = 'ModelPrediction')#, color = '#F57C00')
     plt.plot(xaxis, p_iou, label = "IOU", color = '#1B5E20')
     plt.legend()

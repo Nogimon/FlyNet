@@ -44,6 +44,7 @@ def generatefolders(name):
         folder1 = folders[start2:end2]
     else:
         folder1 = folders[start3:end3]
+        #folder1 = ['/media/zlab-1/Data/Lian/keras/nTrain/newAD/SHR_S07_HCM1+.tiff/']
 
     return folder1
 
@@ -64,6 +65,7 @@ def prepare_data_test(name):
     for i in folder1:
         print(i)
         file=sorted(glob(i+'*.png'))
+        #print(file)
         print("number of files is ", len(file) / 2)
         #testcount.append(len(file) / 2)
 
@@ -123,10 +125,25 @@ def calculatearea(a, name):
         cc[ccc[0:2]]=[255, 0, 0]
         bb[bbb[0:2]]=[0, 0, 255]   
         
+        '''
         dst = cv2.addWeighted(cc,0.5,bb,0.5,0)    
-        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result/'+name+'{}.jpg'.format(format(i,'05')),dst)
-        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result/'+name+'{}_original.jpg'.format(format(i,'05')),X_test[i])
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529/'+name+'{}.jpg'.format(format(i,'05')),dst)
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529/'+name+'{}_original.jpg'.format(format(i,'05')),X_test[i])
+        '''
+
+
+        #Create images in preparation for flaw images looks like fig2
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529sep/'+name+'{}_gt.jpg'.format(format(i,'05')),bb)    
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529sep/'+name+'{}_pd.jpg'.format(format(i,'05')),cc)
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529sep/'+name+'{}_original.jpg'.format(format(i,'05')),X_test[i])
         
+        '''
+        overlap1 = cv2.addWeighted(bb, 0.5, X_test[i], 0.5, 0)
+        overlap2 = cv2.addWeighted(cc, 0.5, X_test[i], 0.5, 0)
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529/'+name+'{}.jpg'.format(format(i,'05')),overlap1)
+        cv2.imwrite('/media/zlab-1/Data/Lian/keras/result0529/'+name+'{}.jpg'.format(format(i,'05')),overlap2)
+        '''
+
         b1=np.squeeze(b)
         #count1=np.sum(b1)/255
         count1 = ((250<b1)&(b1<260)).sum()

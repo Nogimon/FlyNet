@@ -41,7 +41,7 @@ def generatetrainnew(foldernew):
             #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
 
             #for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:,:], img[20:,20:], img[0:-20, 20:], img[20:, 0:-20]]:
-            for img1 in [img[10:-10, 10:-10],  img[:, :]]:
+            for img1 in [  img[:, :]]:
 
                 resized = cv2.resize(img1, (128, 128), cv2.INTER_LINEAR)
                 train.append(resized)
@@ -55,7 +55,7 @@ def generatetrainnew(foldernew):
                 augmented = transform.rotate(resized, 270)
                 train.append(augmented)
 
-                for shift in [5, 20, 30]:
+                for shift in [20, 30]:
             
                     augmented = np.roll(resized, shift, axis = 1)
                     augmented[:,0:shift] = 0
@@ -81,7 +81,7 @@ def generatetrainnew(foldernew):
             img = img / 255
             #img = cv2.cvtColor(cv2.imread(j), cv2.COLOR_BGR2GRAY)
             # for img1 in [img[10:-10, 10:-10], img[0:-20, 0:-20], img[:,:], img[20:,20:], img[0:-20, 20:], img[20:, 0:-20]]:
-            for img1 in [img[10:-10, 10:-10], img[:, :]]:
+            for img1 in [img[:, :]]:
                         
                 resized = cv2.resize(img1, (128, 128), cv2.INTER_LINEAR)
                 y.append(resized)
@@ -95,7 +95,7 @@ def generatetrainnew(foldernew):
                 augmented = transform.rotate(resized, 270)
                 y.append(augmented)
 
-                for shift in [5, 20, 30]:
+                for shift in [20, 30]:
             
                     augmented = np.roll(resized, shift, axis = 1)
                     augmented[:,0:shift] = 0
