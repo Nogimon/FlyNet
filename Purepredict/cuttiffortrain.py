@@ -18,15 +18,15 @@ def cutImage(imagefile, maskfile):
     mask = io.imread(maskfile)
        
     
-    xrange1 = 50
-    yrange = 60
-    os.makedirs("/media/zlab-1/Data/Lian/keras/nTrain/newfly/{}".format(os.path.basename(imagefile)))
+    xrange1 = 64
+    yrange = 100
+    os.makedirs("/media/zlab-1/Data/Lian/keras/nTrain/newAD/{}".format(os.path.basename(imagefile)))
 
     for i in range(len(mask)):
         if mask[i,:,:,0].sum() > 0:
             xstart, xend, ystart, yend = getBox(mask[i,:,:,0], xrange1, yrange)
-            io.imsave("/media/zlab-1/Data/Lian/keras/nTrain/newfly/{}/{}_mask.png".format(os.path.basename(imagefile), i), np.uint8(mask[i, ystart:yend, 14:114, 0]))
-            io.imsave("/media/zlab-1/Data/Lian/keras/nTrain/newfly/{}/{}.png".format(os.path.basename(imagefile), i), image[i, ystart:yend, 14:114])
+            io.imsave("/media/zlab-1/Data/Lian/keras/nTrain/newAD/{}/{}_mask.png".format(os.path.basename(imagefile), format(i,'05')), np.uint8(mask[i, ystart:yend, :, 0]))
+            io.imsave("/media/zlab-1/Data/Lian/keras/nTrain/newAD/{}/{}.png".format(os.path.basename(imagefile), format(i,'05')), image[i, ystart:yend, :])
     
 
     #im1.save("/media/zlab-1/Data/QX/extract/{}/{}_mask.png".format(os.path.basename(file[0]),l))

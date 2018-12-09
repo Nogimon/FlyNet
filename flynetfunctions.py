@@ -245,16 +245,36 @@ def plotresults(p_ground, p_count, p_iou, diametervd, name):
     plt.xlabel('Time(s)', fontsize=14)
     plt.ylabel('IOU', fontsize=14,va='bottom',ha='center')
     plt.xlim(0,xaxis[-1])
-    plt.ylim(0.6, 1)
+    plt.ylim(0.7, 1)
+    plt.yticks([0.7,0.8,0.9,1.0])
     #plt.legend()
     #plt.figlegend((l1,l2,l3),('GroundTruth','ModelPrediction','accuracy'),'best')
     #plt.savefig('./resultimage/arearesult_'+time.asctime(time.localtime(time.time()))+name+'.png')
     plt.savefig('./resultimage/arearesult_'+name+'.png')
     plt.clf()
     
+    #plot the mismatch part
+    if (name == "larva_9"):
+        xaxis1 = np.array(range(60))
+        print(xaxis1)
+        xaxis1 = xaxis1/parameters.timefactor
+        plt.figure(figsize = (3, 3))
+        diametergt = diametervd[0][420:480]
+        diametermp = diametervd[1][420:480]
+        print(diametergt)
+        plt.plot(xaxis1,diametergt, label = 'GroudTruth')#, color = '#006064')
+        plt.plot(xaxis1,diametermp, label = 'ModelPrediction')#, color = '#F57C00')
+        plt.ylabel('Diameter(' + r'$\mu$' + 'm)', fontsize=14,va='bottom',ha='center')
+        plt.xlabel('Time(s)', fontsize=14)
+        plt.xlim(0,xaxis1[-1])
+        plt.savefig('./resultimage/mismatch.png')
+        plt.clf()
+        print("plotted mismatch")
 
 
-    #savenpy(diameter)
+
+
+    
 
     '''
     #This part is used only to generate the legend!

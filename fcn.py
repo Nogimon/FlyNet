@@ -33,12 +33,12 @@ def prepare_data(name):
     folders = generatefolders(name)
            
     
-    foldertrain = folders[:]
-    foldervalidate = folders[parameters.valifolder:parameters.valifolder+1]
-    foldertest = folders[parameters.testfolder:parameters.testfolder+1]
+    foldertrain = folders[1:20]
+    foldervalidate = folders[parameters.valifolder:parameters.valifolder+3]
+    foldertest = folders[parameters.testfolder:parameters.testfolder+3]
     #foldertrain = folders - foldertest - foldervalidate
-    del foldertrain[parameters.valifolder]
-    del foldertrain[parameters.testfolder]
+    #del foldertrain[parameters.valifolder]
+    #del foldertrain[parameters.testfolder]
     '''
     foldertrain = folders[8:10]
     foldervalidate = folders[9:10]
@@ -257,8 +257,8 @@ def generateDataSimple(colorgt):
     directory = "/media/zlab-1/Data/Lian/keras/nTrain/Larva"
     folders=sorted(glob(directory+"/*/"))
     
-    foldertrain = folders[8:10]
-    foldervalidate = folders[9:10]
+    foldertrain = folders[:]
+    foldervalidate = folders[9:12]
 
     train=[]
     y=[]
@@ -419,15 +419,15 @@ if __name__ == '__main__':
     #True if the image last channel max is 255
     colorgt = False
     #True if use generator
-    augflag = True
+    augflag = False
     #get the data
     parameters = Parameters()
 
     if (augflag == False):
-        train, y, X_validate, y_validate, X_test, y_test = generateData()
-        #train, y, X_validate, y_validate = generateDataSimple(colorgt)
-        np.save("./X_validate320.npy", X_validate)
-        np.save("./y_validate329.npy", y_validate)
+        #train, y, X_validate, y_validate, X_test, y_test = generateData()
+        train, y, X_validate, y_validate = generateDataSimple(colorgt)
+        #np.save("./X_validate320.npy", X_validate)
+        #np.save("./y_validate329.npy", y_validate)
     else:
         trainGenerator = DataGenerator().dataGenerateWithAug("./nTrain")
         X_validate = np.load("./X_validate.npy")
@@ -455,7 +455,7 @@ if __name__ == '__main__':
 
     #Train
     if (augflag == False):
-        history = model.fit(train, y, batch_size=2, epochs=20, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_validate, y_validate))
+        history = model.fit(train, y, batch_size=8, epochs=20, verbose=1, shuffle=True, callbacks=[model_checkpoint, earlystop],validation_data=(X_validate, y_validate))
         nphistory = np.array(history.history['dice_coef'])
         np.savetxt("./fcnhistory_train.txt", nphistory, delimiter = ",")
         nphistoryv = np.array(history.history['val_dice_coef'])
